@@ -6,6 +6,7 @@
 #include "booking.h"
 #include "display.h"
 #include "input.h"
+#include "auth.h"
 
 /* Lets the user pick a movie, then one of its showtimes. */
 static Showtime *selectShowtime(Movie movies[NUM_MOVIES]) {
@@ -121,25 +122,63 @@ static void handleRevenueReport(Movie movies[NUM_MOVIES]) {
     printRevenueReport(movies);
 }
 
+/* Customer session: booking-related operations only, no back-office access. */
+static void runCustomerMenu(Movie movies[NUM_MOVIES]) {
+    int choice;
+    do {
+        printCustomerMenu();
+        choice = readInt("Enter your choice: ", 1, 5);
+
+        switch (choice) {
+            case 1: handleViewShowtimes(movies); break;
+            case 2: handleViewSeatMap(movies);   break;
+            case 3: handleBookSeat(movies);      break;
+            case 4: handleCancelBooking(movies); break;
+            case 5: printf("Returning to main menu...\n"); break;
+        }
+    } while (choice != 5);
+}
+
+/* Admin session: full access, including search and revenue reporting. */
+static void runAdminMenu(Movie movies[NUM_MOVIES]) {
+    int choice;
+    do {
+        printAdminMenu();
+        choice = readInt("Enter your choice: ", 1, 7);
+
+        switch (choice) {
+            case 1: handleViewShowtimes(movies);  break;
+            case 2: handleViewSeatMap(movies);    break;
+            case 3: handleBookSeat(movies);       break;
+            case 4: handleCancelBooking(movies);  break;
+            case 5: handleSearchBooking(movies);  break;
+            case 6: handleRevenueReport(movies);  break;
+            case 7: printf("Returning to main menu...\n"); break;
+        }
+    } while (choice != 7);
+}
+
 int main(void) {
     Movie movies[NUM_MOVIES];
     initMovies(movies);
 
-    int choice;
+    int role;
     do {
-        printMainMenu();
-        choice = readInt("Enter your choice: ", 1, 7);
+        printRoleMenu();
+        role = readInt("Enter your choice: ", 1, 3);
 
-        switch (choice) {
-            case 1: handleViewShowtimes(movies);   break;
-            case 2: handleViewSeatMap(movies);     break;
-            case 3: handleBookSeat(movies);        break;
-            case 4: handleCancelBooking(movies);   break;
-            case 5: handleSearchBooking(movies);   break;
-            case 6: handleRevenueReport(movies);   break;
-            case 7: printf("Goodbye!\n");          break;
+        if (role == 1) {
+            runCustomerMenu(movies);
+        } else if (role == 2) {
+            if (authenticateAdmin()) {
+                runAdminMenu(movies);
+            } else {
+                printf("Returning to main menu...\n");
+            }
+        } else {
+            printf("Goodbye!\n");
         }
-    } while (choice != 7);
+    } while (role != 3);
 
     return 0;
 }
