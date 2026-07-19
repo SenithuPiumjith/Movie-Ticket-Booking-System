@@ -8,6 +8,7 @@
 #include "input.h"
 #include "auth.h"
 
+
 /* Lets the user pick a movie, then one of its showtimes. */
 static Showtime *selectShowtime(Movie movies[NUM_MOVIES]) {
     printShowtimesList(movies);
