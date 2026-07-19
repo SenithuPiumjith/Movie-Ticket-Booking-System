@@ -12,4 +12,8 @@ int bookSeat(Showtime *show,
              int seatsInTransaction,
              double *priceOut);
 
+int cancelSeat(Showtime *show,
+               int row,
+               int col);
+
 #endif

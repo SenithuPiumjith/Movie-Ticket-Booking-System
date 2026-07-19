@@ -1,44 +1,61 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "input.h"
 
-int readInt(const char *prompt, int min, int max)
+int readInt(const char *prompt,int min,int max)
 {
+    char line[128];
     int value;
 
-    while (1)
+    while(1)
     {
-        printf("%s", prompt);
+        printf("%s",prompt);
 
-        scanf("%d", &value);
+        if(fgets(line,sizeof(line),stdin)==NULL)
+        {
+            exit(0);
+        }
 
-        while(getchar()!='\n');
-
-        if(value>=min && value<=max)
+        if(sscanf(line,"%d",&value)==1 &&
+           value>=min &&
+           value<=max)
+        {
             return value;
+        }
 
         printf("Invalid input.\n");
     }
 }
 
-void readLine(const char *prompt, char *buffer, int size)
+void readLine(const char *prompt,char *buffer,int size)
 {
-    printf("%s", prompt);
+    printf("%s",prompt);
 
-    fgets(buffer,size,stdin);
+    if(fgets(buffer,size,stdin)==NULL)
+    {
+        exit(0);
+    }
 
-    buffer[strcspn(buffer,"\n")] = '\0';
+    buffer[strcspn(buffer,"\n")]='\0';
 }
 
 char readChar(const char *prompt)
 {
-    char ch;
+    char line[32];
 
-    printf("%s",prompt);
+    while(1)
+    {
+        printf("%s",prompt);
 
-    scanf(" %c",&ch);
+        if(fgets(line,sizeof(line),stdin)==NULL)
+        {
+            exit(0);
+        }
 
-    while(getchar()!='\n');
+        if(line[0]!='\n')
+            return line[0];
 
-    return ch;
+        printf("Invalid input.\n");
+    }
 }
