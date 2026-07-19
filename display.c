@@ -2,15 +2,31 @@
 #include "display.h"
 #include "seat.h"
 
-void printMainMenu(void) {
+void printRoleMenu(void) {
     printf("\n===== Movie Ticket Booking System =====\n");
+    printf("1. Customer Menu\n");
+    printf("2. Admin Menu\n");
+    printf("3. Exit\n");
+}
+
+void printCustomerMenu(void) {
+    printf("\n----- Customer Menu -----\n");
+    printf("1. View Showtimes\n");
+    printf("2. View Seat Map\n");
+    printf("3. Book a Seat\n");
+    printf("4. Cancel a Booking\n");
+    printf("5. Back to Main Menu\n");
+}
+
+void printAdminMenu(void) {
+    printf("\n----- Admin Menu -----\n");
     printf("1. View Showtimes\n");
     printf("2. View Seat Map\n");
     printf("3. Book a Seat\n");
     printf("4. Cancel a Booking\n");
     printf("5. Search Booking\n");
     printf("6. View Revenue Report\n");
-    printf("7. Exit\n");
+    printf("7. Back to Main Menu\n");
 }
 
 void printShowtimesList(Movie movies[NUM_MOVIES]) {
