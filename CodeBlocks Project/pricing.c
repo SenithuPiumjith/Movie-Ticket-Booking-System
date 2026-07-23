@@ -1,20 +1,38 @@
 #include "pricing.h"
+#include "config.h"
 
 double calculateSeatPrice(SeatTier tier, int isStudent, int isSenior,
                           int seatsInTransaction)
 {
-    switch (tier)
+    double base = seatTierBasePrice(tier);
+
+    if (isStudent)
     {
-        case SEAT_STANDARD:
-            return 1000.0;
-
-        case SEAT_PREMIUM:
-            return 1500.0;
-
-        case SEAT_VIP:
-            return 2000.0;
-
-        default:
-            return 1000.0;
+        base = base * (1.0 - STUDENT_DISCOUNT_PCT / 100.0);
     }
+    else if (isSenior)
+    {
+        base = base * (1.0 - SENIOR_DISCOUNT_PCT / 100.0);
+    }
+
+    return base;
+}
+#include "pricing.h"
+#include "config.h"
+
+double calculateSeatPrice(SeatTier tier, int isStudent, int isSenior,
+                          int seatsInTransaction)
+{
+    double base = seatTierBasePrice(tier);
+
+    if (isStudent)
+    {
+        base = base * (1.0 - STUDENT_DISCOUNT_PCT / 100.0);
+    }
+    else if (isSenior)
+    {
+        base = base * (1.0 - SENIOR_DISCOUNT_PCT / 100.0);
+    }
+
+    return base;
 }
