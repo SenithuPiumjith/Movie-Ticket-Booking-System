@@ -31,13 +31,51 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../README.md" />
+		<Unit filename="../admin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../admin.h" />
+		<Unit filename="../auth.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../auth.h" />
+		<Unit filename="../authentication.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../authentication.h" />
+		<Unit filename="../booking.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../booking.h" />
+		<Unit filename="../config.h" />
+		<Unit filename="../display.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../display.h" />
+		<Unit filename="../input.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../input.h" />
+		<Unit filename="../main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../movie.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../movie.h" />
 		<Unit filename="../pricing.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="main.c">
+		<Unit filename="../pricing.h" />
+		<Unit filename="../seat.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="pricing.h" />
+		<Unit filename="../seat.h" />
+		<Unit filename="../user.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../user.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
