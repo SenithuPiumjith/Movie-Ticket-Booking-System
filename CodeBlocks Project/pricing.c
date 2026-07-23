@@ -2,37 +2,25 @@
 #include "config.h"
 
 double calculateSeatPrice(SeatTier tier, int isStudent, int isSenior,
-                          int seatsInTransaction)
-{
+                           int seatsInTransaction) {
     double base = seatTierBasePrice(tier);
+    double discountPct = 0.0;
 
-    if (isStudent)
-    {
-        base = base * (1.0 - STUDENT_DISCOUNT_PCT / 100.0);
-    }
-    else if (isSenior)
-    {
-        base = base * (1.0 - SENIOR_DISCOUNT_PCT / 100.0);
-    }
-
-    return base;
-}
-#include "pricing.h"
-#include "config.h"
-
-double calculateSeatPrice(SeatTier tier, int isStudent, int isSenior,
-                          int seatsInTransaction)
-{
-    double base = seatTierBasePrice(tier);
-
-    if (isStudent)
-    {
-        base = base * (1.0 - STUDENT_DISCOUNT_PCT / 100.0);
-    }
-    else if (isSenior)
-    {
-        base = base * (1.0 - SENIOR_DISCOUNT_PCT / 100.0);
+    /* A booking can only be flagged as ONE category. */
+    if (isStudent) {
+        discountPct += STUDENT_DISCOUNT_PCT;
+    } else if (isSenior) {
+        discountPct += SENIOR_DISCOUNT_PCT;
     }
 
-    return base;
+    /* Group discount stacks on top of the category discount. */
+    if (seatsInTransaction >= GROUP_MIN_SEATS) {
+        discountPct += GROUP_DISCOUNT_PCT;
+    }
+
+    if (discountPct > 100.0) {
+        discountPct = 100.0; /* safety net, should never trigger */
+    }
+
+    return base * (1.0 - discountPct / 100.0);
 }
