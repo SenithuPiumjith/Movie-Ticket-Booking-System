@@ -8,12 +8,24 @@
 #include "input.h"
 #include "auth.h"
 
-/* Lets the user pick a movie, then one of its showtimes. */
+/*
+ * Lets the user pick a movie, then one of its showtimes.
+ * Entering 0 at either prompt cancels the selection; returns NULL
+ * in that case so the caller can bail out cleanly.
+ */
 static Showtime *selectShowtime(Movie movies[NUM_MOVIES]) {
     printShowtimesList(movies);
-    int m = readInt("Select movie number: ", 1, NUM_MOVIES) - 1;
-    int s = readInt("Select showtime number: ", 1, SHOWTIMES_PER_MOVIE) - 1;
-    return &movies[m].showtimes[s];
+    int m = readInt("Select movie number (0 to cancel): ", 0, NUM_MOVIES);
+    if (m == 0) {
+        return NULL;
+    }
+
+    int s = readInt("Select showtime number (0 to cancel): ", 0, SHOWTIMES_PER_MOVIE);
+    if (s == 0) {
+        return NULL;
+    }
+
+    return &movies[m - 1].showtimes[s - 1];
 }
 
 /* Reads a row letter (A..E) and re-prompts on anything invalid. */
@@ -35,11 +47,19 @@ static void handleViewShowtimes(Movie movies[NUM_MOVIES]) {
 
 static void handleViewSeatMap(Movie movies[NUM_MOVIES]) {
     Showtime *show = selectShowtime(movies);
+    if (!show) {
+        printf("Cancelled.\n");
+        return;
+    }
     printSeatMap(show);
 }
 
 static void handleBookSeat(Movie movies[NUM_MOVIES]) {
     Showtime *show = selectShowtime(movies);
+    if (!show) {
+        printf("Booking cancelled.\n");
+        return;
+    }
     printSeatMap(show);
 
     int numSeats = readInt("How many seats to book in this transaction? ",
@@ -86,6 +106,10 @@ static void handleBookSeat(Movie movies[NUM_MOVIES]) {
 
 static void handleCancelBooking(Movie movies[NUM_MOVIES]) {
     Showtime *show = selectShowtime(movies);
+    if (!show) {
+        printf("Cancelled.\n");
+        return;
+    }
     printSeatMap(show);
 
     int  row   = readValidRow("Row letter (A-E): ");
@@ -112,6 +136,10 @@ static void handleSearchBooking(Movie movies[NUM_MOVIES]) {
         searchByName(movies, name);
     } else {
         Showtime *show = selectShowtime(movies);
+        if (!show) {
+            printf("Cancelled.\n");
+            return;
+        }
         int row = readValidRow("Row letter (A-E): ");
         int col = readInt("Seat number (1-10): ", 1, SEATS_PER_ROW) - 1;
         searchBySeat(show, row, col);
