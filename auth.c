@@ -9,7 +9,13 @@ int authenticateAdmin(void) {
     char password[MAX_NAME_LEN];
 
     for (int attempt = 1; attempt <= MAX_LOGIN_ATTEMPTS; attempt++) {
-        readLine("Admin username: ", username, sizeof(username));
+        readLine("Admin username (or press Enter to cancel and go back): ", username, sizeof(username));
+
+        if (username[0] == '\0') {
+            printf("\nLogin cancelled.\n");
+            return 0;
+        }
+
         readLine("Admin password: ", password, sizeof(password));
 
         if (strcmp(username, ADMIN_USERNAME) == 0 &&
