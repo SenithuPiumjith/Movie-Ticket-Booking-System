@@ -20,7 +20,12 @@ static Showtime *selectShowtime(Movie movies[NUM_MOVIES]) {
         return NULL;
     }
 
-    int s = readInt("Select showtime number (0 to cancel): ", 0, SHOWTIMES_PER_MOVIE);
+    char showtimePrompt[MAX_TITLE_LEN + 64];
+    snprintf(showtimePrompt, sizeof(showtimePrompt),
+             "You selected: %s, Select showtime number (0 to cancel): ",
+             movies[m - 1].title);
+
+    int s = readInt(showtimePrompt, 0, SHOWTIMES_PER_MOVIE);
     if (s == 0) {
         return NULL;
     }
@@ -80,24 +85,65 @@ static void handleBookSeat(Movie movies[NUM_MOVIES]) {
         printf("Group discount (10%% off) applies to this booking.\n");
     }
 
-    int booked = 0;
+    int    bookedRows[NUM_ROWS * SEATS_PER_ROW];
+    int    bookedCols[NUM_ROWS * SEATS_PER_ROW];
+    int    booked = 0;
+    double totalPrice = 0.0;
+
     for (int i = 0; i < numSeats; i++) {
         printf("\nSeat %d of %d:\n", i + 1, numSeats);
-        int row = readValidRow("  Row letter (A-E): ");
-        int col = readInt("  Seat number (1-10): ", 1, SEATS_PER_ROW) - 1;
 
-        double price;
-        int status = bookSeat(show, row, col, name, isStudent, isSenior,
-                               numSeats, &price);
-        char rowCh = (char) ('A' + row);
+        int seatDone = 0;
+        while (!seatDone) {
+            int row = readValidRow("  Row letter (A-E): ");
+            int col = readInt("  Seat number (1-10): ", 1, SEATS_PER_ROW) - 1;
 
-        if (status == 0) {
-            printf("  Booked seat %c%d for Rs. %.2f\n", rowCh, col + 1, price);
-            booked++;
-        } else if (status == -1) {
-            printf("  Error: seat position out of range.\n");
-        } else if (status == -2) {
-            printf("  Error: seat %c%d is already booked.\n", rowCh, col + 1);
+            double price;
+            int status = bookSeat(show, row, col, name, isStudent, isSenior,
+                                   numSeats, &price);
+            char rowCh = (char) ('A' + row);
+
+            if (status == 0) {
+                printf("  Booked seat %c%d for Rs. %.2f\n", rowCh, col + 1, price);
+                bookedRows[booked] = row;
+                bookedCols[booked] = col;
+                booked++;
+                totalPrice += price;
+                seatDone = 1;
+            } else if (status == -1) {
+                printf("  Error: seat position out of range.\n");
+                char retry = readChar("  Try a different seat? (y/n): ");
+                if (retry == 'n' || retry == 'N') {
+                    seatDone = 1;
+                }
+            } else if (status == -2) {
+                printf("  Error: seat %c%d is already booked.\n", rowCh, col + 1);
+                char retry = readChar("  Book again with a different seat? (y/n): ");
+                if (retry == 'n' || retry == 'N') {
+                    seatDone = 1;
+                }
+            }
+        }
+    }
+
+    if (booked > 0) {
+        printf("\nYou selected these seats: ");
+        for (int i = 0; i < booked; i++) {
+            char rowCh = (char) ('A' + bookedRows[i]);
+            printf("%c%d", rowCh, bookedCols[i] + 1);
+            if (i < booked - 1) {
+                printf(", ");
+            }
+        }
+        printf("\nTotal price = Rs. %.2f\n", totalPrice);
+
+        char confirm = readChar("Confirm this booking? (y/n): ");
+        if (confirm != 'y' && confirm != 'Y') {
+            for (int i = 0; i < booked; i++) {
+                cancelSeat(show, bookedRows[i], bookedCols[i]);
+            }
+            printf("Booking cancelled. All selected seats have been released.\n");
+            booked = 0;
         }
     }
 
@@ -112,18 +158,28 @@ static void handleCancelBooking(Movie movies[NUM_MOVIES]) {
     }
     printSeatMap(show);
 
-    int  row   = readValidRow("Row letter (A-E): ");
-    int  col   = readInt("Seat number (1-10): ", 1, SEATS_PER_ROW) - 1;
-    char rowCh = (char) ('A' + row);
+    int numSeats = readInt("How many seats do you want to cancel? ",
+                            1, NUM_ROWS * SEATS_PER_ROW);
 
-    int status = cancelSeat(show, row, col);
-    if (status == 0) {
-        printf("Seat %c%d has been freed and removed from revenue.\n", rowCh, col + 1);
-    } else if (status == -1) {
-        printf("Error: seat position out of range.\n");
-    } else if (status == -2) {
-        printf("Error: seat %c%d is not currently booked.\n", rowCh, col + 1);
+    int cancelled = 0;
+    for (int i = 0; i < numSeats; i++) {
+        printf("\nSeat %d of %d to cancel:\n", i + 1, numSeats);
+        int  row   = readValidRow("  Row letter (A-E): ");
+        int  col   = readInt("  Seat number (1-10): ", 1, SEATS_PER_ROW) - 1;
+        char rowCh = (char) ('A' + row);
+
+        int status = cancelSeat(show, row, col);
+        if (status == 0) {
+            printf("  Seat %c%d has been freed and removed from revenue.\n", rowCh, col + 1);
+            cancelled++;
+        } else if (status == -1) {
+            printf("  Error: seat position out of range.\n");
+        } else if (status == -2) {
+            printf("  Error: seat %c%d is not currently booked.\n", rowCh, col + 1);
+        }
     }
+
+    printf("\n%d of %d requested seat(s) cancelled successfully.\n", cancelled, numSeats);
 }
 
 static void handleSearchBooking(Movie movies[NUM_MOVIES]) {
