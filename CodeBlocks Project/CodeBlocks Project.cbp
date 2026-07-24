@@ -32,18 +32,10 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../README.md" />
-		<Unit filename="../admin.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../admin.h" />
 		<Unit filename="../auth.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../auth.h" />
-		<Unit filename="../authentication.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../authentication.h" />
 		<Unit filename="../booking.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -72,10 +64,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../seat.h" />
-		<Unit filename="../user.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../user.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
