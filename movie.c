@@ -28,7 +28,7 @@ static void initMovie(Movie *movie, const char *title,
 
 /* Hardcoded data set: 3 movies, 2 showtimes each, as required. */
 void initMovies(Movie movies[NUM_MOVIES]) {
-    initMovie(&movies[0], "The Last Signal",  "10:00 AM", "6:30 PM");
-    initMovie(&movies[1], "Midnight Harbor",  "1:00 PM",  "9:00 PM");
-    initMovie(&movies[2], "Paper Kingdoms",   "11:30 AM", "4:15 PM");
+    initMovie(&movies[0], "Ben 10 Alien Force",  "10:00 AM", "6:30 PM");
+    initMovie(&movies[1], "Odyssy",  "1:00 PM",  "9:00 PM");
+    initMovie(&movies[2], "Spider Man 4",   "11:30 AM", "4:15 PM");
 }
